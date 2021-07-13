@@ -14,16 +14,17 @@ $Instance = ""
 $ExtensionName = ""
 $VersionCount = 0
 $LastVersion = 0
-$Version = "1.0.0." + $VersionCount
+$Version = "1.0.0.$VersionCount"
 
 #Toggle to get a confirmation per uninstalled version
-$WriteOutput = $false
+$WriteOutput = $true
 
 do {
-    Unpublish-NAVApp -ServerInstance $Instance -Name $ExtensionName -Version $Version 
-    $VersionCount += 1   
     if($WriteOutput) {
-        Write-Output "Version 1.0.0." + $VersionCount + "has been uninstalled."
+      Write-Output "Uninstalling Version $Version ..."
     }
-} until ($VersionCount = $LastVersion)
+    Get-NAVAppInfo -ServerInstance $Instance -Name $ExtensionName -Version $Version | Unpublish-NAVApp
+    $VersionCount += 1
+    $Version = "1.0.0.$VersionCount"
+} until ($VersionCount -eq $LastVersion)
 
